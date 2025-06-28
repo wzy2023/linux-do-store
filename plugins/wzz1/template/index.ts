@@ -5,8 +5,16 @@ export default {
     author: { name: '单身汪', id: 'wzz1' },
   },
   params: {
-    config: [],
-    initValues: {},
+    config: [
+      {
+        name: 'tags',
+        description: '标签配置',
+        type: 'select-tags' as const,
+      },
+    ],
+    initValues: {
+      tags: ['默认标签'],
+    },
   },
   trigger: async (params: any) => {
     console.log(666, 4, 111, params)

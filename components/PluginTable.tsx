@@ -4,6 +4,8 @@ import { Switch, Tag } from 'antd'
 import { DragSortTable } from '@ant-design/pro-components'
 import type { ProColumns } from '@ant-design/pro-components'
 
+import { PluginParamsConfig } from './PluginParamsConfig'
+
 import { usePluginTable, type PluginInfo } from '@/hooks'
 
 export const PluginTable = () => {
@@ -73,14 +75,17 @@ export const PluginTable = () => {
       onDragSortEnd={onDragSortEnd}
       expandable={{
         expandedRowRender: (record) => (
-          <div style={{ padding: '16px', backgroundColor: '#fafafa' }}>
-            <div>参数配置</div>
-            <div style={{ marginTop: 8, color: '#666' }}>
-              暂无内容
-            </div>
+          <div style={{ backgroundColor: '#fafafa' }}>
+            <PluginParamsConfig
+              pluginId={record.id}
+              config={record.params?.config || []}
+              initValues={record.params?.initValues || {}}
+            />
           </div>
         ),
-        rowExpandable: () => true,
+        rowExpandable: (record) => {
+          return !!(record.params?.config && record.params.config.length > 0)
+        },
       }}
       pagination={false}
       search={false}

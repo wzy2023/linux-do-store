@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { getPluginSettings, savePluginSettings, type PluginSetting } from '@/utils'
+import { getPluginSettings, savePluginSettings, type PluginSetting, type PluginConfigItem } from '@/utils'
 import plugins from '../plugins'
 
 // 插件信息类型
@@ -9,10 +9,13 @@ export interface PluginInfo {
   name: string
   description: string
   enabled: boolean
-  params?: any
   author: {
     name: string
     id: string
+  }
+  params?: {
+    config: PluginConfigItem[]
+    initValues: Record<string, any>
   }
 }
 
