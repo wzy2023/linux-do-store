@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { getPluginSettings, savePluginSettings, type PluginSetting, type PluginConfigItem } from '@/utils'
+import { getPluginSettings, savePluginSettings, type PluginSetting, type PluginConfigItem, executePlugin } from '@/utils'
 import plugins from '../plugins'
 
 // 插件信息类型
@@ -88,9 +88,48 @@ export const usePluginTable = () => {
     initializePlugins()
   }, [initializePlugins])
 
+  // 执行所有启用的插件
+  const executeAllEnabledPlugins = useCallback(async (reason = '用户操作') => {
+    const enabledPlugins = pluginList.filter(p => p.enabled)
+    
+    if (enabledPlugins.length === 0) {
+      console.log('📦 没有启用的插件需要执行')
+      return
+    }
+    
+    console.group(`⚙️ 配置变更 - 重新执行插件 (${enabledPlugins.length}个启用)`)
+    console.log('📊 执行概览:', {
+      总插件数: pluginList.length,
+      启用插件数: enabledPlugins.length,
+      执行时间: new Date().toLocaleTimeString(),
+      触发原因: reason,
+    })
+    
+    const startTime = Date.now()
+    
+    for (const pluginInfo of enabledPlugins) {
+      // 找到对应的原始插件对象
+      const originalPlugin = plugins.find((_, index) => {
+        const pluginId = plugins[index]?.info?.author?.id + '_' + index
+        return pluginId === pluginInfo.id
+      })
+      
+      if (originalPlugin) {
+        await executePlugin(originalPlugin, pluginInfo.id)
+      }
+    }
+    
+    const endTime = Date.now()
+    console.log(`🎉 所有插件执行完成，总耗时: ${endTime - startTime}ms`)
+    console.groupEnd()
+  }, [pluginList])
+
   return {
     pluginList,
     updatePluginEnabled,
     updatePluginOrder,
+    executeAllEnabledPlugins,
   }
 }
+
+export { useGlobalPluginExecutor } from './useGlobalPluginExecutor'

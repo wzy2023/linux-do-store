@@ -60,3 +60,39 @@ export const savePluginParams = (pluginId: string, params: Record<string, any>):
     console.log(666, '保存插件参数失败:', error)
   }
 }
+
+// 执行单个插件
+export const executePlugin = async (plugin: any, pluginId: string): Promise<void> => {
+  console.group(`🔌 插件执行: ${plugin.info.name}`)
+
+  try {
+    // 获取用户配置的参数
+    const userParams = getPluginParams(pluginId)
+    // 合并初始值和用户配置
+    const finalParams = { ...plugin.params?.initValues, ...userParams }
+
+    console.log('📋 插件信息:', {
+      名称: plugin.info.name,
+      描述: plugin.info.description,
+      作者: plugin.info.author.name,
+      ID: pluginId,
+    })
+
+    console.log('⚙️ 执行参数:', finalParams)
+
+    const startTime = Date.now()
+
+    // 调用插件的trigger函数
+    if (typeof plugin.trigger === 'function') {
+      await plugin.trigger(finalParams)
+      const endTime = Date.now()
+      console.log(`✅ 执行成功，耗时: ${endTime - startTime}ms`)
+    } else {
+      console.warn('⚠️ 插件没有trigger函数')
+    }
+  } catch (error) {
+    console.error('❌ 插件执行失败:', error)
+  } finally {
+    console.groupEnd()
+  }
+}

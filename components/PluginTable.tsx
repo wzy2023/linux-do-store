@@ -9,7 +9,7 @@ import { PluginParamsConfig } from './PluginParamsConfig'
 import { usePluginTable, type PluginInfo } from '@/hooks'
 
 export const PluginTable = () => {
-  const { pluginList, updatePluginEnabled, updatePluginOrder } = usePluginTable()
+  const { pluginList, updatePluginEnabled, updatePluginOrder, executeAllEnabledPlugins } = usePluginTable()
 
   // 处理作者标签点击
   const onAuthorClick = (authorId: string) => {
@@ -20,11 +20,25 @@ export const PluginTable = () => {
   // 处理启用状态切换
   const onEnabledChange = (checked: boolean, record: PluginInfo) => {
     updatePluginEnabled(record.id, checked)
+    // 启用状态改变后，延迟执行所有启用的插件
+    setTimeout(() => {
+      executeAllEnabledPlugins(`切换插件启用状态: ${record.name}`)
+    }, 100)
   }
 
   // 处理拖拽排序
   const onDragSortEnd = (beforeIndex: number, afterIndex: number, newDataSource: PluginInfo[]) => {
     updatePluginOrder(newDataSource)
+    setTimeout(() => {
+      executeAllEnabledPlugins('拖拽调整插件顺序')
+    }, 100)
+  }
+
+  // 处理参数修改
+  const onParamsChange = () => {
+    setTimeout(() => {
+      executeAllEnabledPlugins('修改插件参数')
+    }, 100)
   }
 
   const columns: ProColumns<PluginInfo>[] = [
@@ -80,6 +94,7 @@ export const PluginTable = () => {
               pluginId={record.id}
               config={record.params?.config || []}
               initValues={record.params?.initValues || {}}
+              onParamsChange={onParamsChange}
             />
           </div>
         ),

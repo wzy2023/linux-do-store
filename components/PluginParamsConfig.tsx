@@ -9,6 +9,7 @@ interface PluginParamsConfigProps {
   pluginId: string
   config: PluginConfigItem[]
   initValues: Record<string, any>
+  onParamsChange?: () => void
 }
 
 interface ParamRow {
@@ -21,7 +22,7 @@ interface ParamRow {
 }
 
 export const PluginParamsConfig = (props: PluginParamsConfigProps) => {
-  const { pluginId, config, initValues } = props
+  const { pluginId, config, initValues, onParamsChange } = props
   const [paramValues, setParamValues] = useState<Record<string, any>>({})
 
   // 初始化参数值
@@ -36,6 +37,9 @@ export const PluginParamsConfig = (props: PluginParamsConfigProps) => {
     const newValues = { ...paramValues, [name]: value }
     setParamValues(newValues)
     savePluginParams(pluginId, newValues)
+    
+    // 参数修改后触发回调
+    onParamsChange?.()
   }
 
   // 渲染值编辑组件
