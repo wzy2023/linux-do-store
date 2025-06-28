@@ -1,0 +1,9 @@
+singleQuote: true
+trailingComma: all
+proseWrap: never
+endOfLine: lf
+jsxSingleQuote: true
+semi: false
+useTabs: false
+arrowParens: avoid
+printWidth: Infinity
