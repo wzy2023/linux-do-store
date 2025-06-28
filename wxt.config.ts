@@ -10,7 +10,6 @@ export default defineConfig({
     host_permissions: ['http://localhost:3000/*', 'https://linux.do/*'],
     action: {
       default_title: 'linux-do-store',
-      default_popup: 'popup.html',
     },
   },
   webExt: {
