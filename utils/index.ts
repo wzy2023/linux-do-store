@@ -42,7 +42,16 @@ export const getPluginParams = (pluginId: string): Record<string, any> => {
   try {
     const allParams = localStorage.getItem(PLUGIN_PARAMS_KEY)
     const params = allParams ? JSON.parse(allParams) : {}
-    return params[pluginId] || {}
+    const result = params[pluginId] || {}
+    
+    // 调试日志：显示参数获取过程
+    console.log('📥 获取插件参数:', {
+      插件ID: pluginId,
+      缓存中的所有参数: params,
+      该插件的参数: result,
+    })
+    
+    return result
   } catch (error) {
     console.log(666, '获取插件参数失败:', error)
     return {}
@@ -56,6 +65,13 @@ export const savePluginParams = (pluginId: string, params: Record<string, any>):
     const currentParams = allParams ? JSON.parse(allParams) : {}
     currentParams[pluginId] = params
     localStorage.setItem(PLUGIN_PARAMS_KEY, JSON.stringify(currentParams))
+    
+    // 调试日志：显示参数保存过程
+    console.log('💾 保存插件参数:', {
+      插件ID: pluginId,
+      保存的参数: params,
+      保存后的全部参数: currentParams,
+    })
   } catch (error) {
     console.log(666, '保存插件参数失败:', error)
   }
@@ -64,12 +80,18 @@ export const savePluginParams = (pluginId: string, params: Record<string, any>):
 // 执行单个插件
 export const executePlugin = async (plugin: any, pluginId: string): Promise<void> => {
   console.group(`🔌 插件执行: ${plugin.info.name}`)
-
+  
   try {
-    // 获取用户配置的参数
+    // 获取用户配置的参数（每次执行都重新获取最新的）
     const userParams = getPluginParams(pluginId)
     // 合并初始值和用户配置
     const finalParams = { ...plugin.params?.initValues, ...userParams }
+    
+    console.log('🔄 参数获取详情:', {
+      初始值: plugin.params?.initValues,
+      用户配置: userParams,
+      最终参数: finalParams,
+    })
 
     console.log('📋 插件信息:', {
       名称: plugin.info.name,

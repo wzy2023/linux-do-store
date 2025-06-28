@@ -38,8 +38,10 @@ export const PluginParamsConfig = (props: PluginParamsConfigProps) => {
     setParamValues(newValues)
     savePluginParams(pluginId, newValues)
     
-    // 参数修改后触发回调
-    onParamsChange?.()
+    // 参数修改后触发回调，使用 setTimeout 确保参数已经保存
+    setTimeout(() => {
+      onParamsChange?.()
+    }, 50)
   }
 
   // 渲染值编辑组件

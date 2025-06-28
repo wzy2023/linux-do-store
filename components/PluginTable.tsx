@@ -36,9 +36,10 @@ export const PluginTable = () => {
 
   // 处理参数修改
   const onParamsChange = () => {
+    // 增加延迟确保参数已经保存到localStorage
     setTimeout(() => {
       executeAllEnabledPlugins('修改插件参数')
-    }, 100)
+    }, 200)
   }
 
   const columns: ProColumns<PluginInfo>[] = [
