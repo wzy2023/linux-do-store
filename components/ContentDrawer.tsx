@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Drawer } from 'antd'
 
+import { PluginTable } from './PluginTable'
+
 interface ContentDrawerProps {
   visible: boolean
   onClose: () => void
@@ -18,16 +20,9 @@ export const ContentDrawer = (props: ContentDrawerProps) => {
       destroyOnClose
       open={visible}
       onClose={onClose}
-      styles={{ body: { padding: 0 } }}
+      styles={{ body: { padding: 16 } }}
     >
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-      }}>
-        暂无内容
-      </div>
+      <PluginTable />
     </Drawer>
   )
 }
